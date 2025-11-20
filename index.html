@@ -5,11 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday Sakshi! 🎉</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Added styles for the password input */
+        .password-input {
+            padding: 12px;
+            border-radius: 20px;
+            border: 2px solid #ff69b4;
+            outline: none;
+            width: 200px;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+        .unlock-btn {
+            margin-top: 10px;
+            padding: 10px 25px;
+            background: #ff1493;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+        .unlock-btn:hover {
+            transform: scale(1.05);
+            background: #d1107a;
+        }
+        .error-text {
+            color: #ff4444;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none; 
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        /* Ensure main content is hidden initially */
+        .main-content {
+            display: none; 
+        }
+    </style>
 </head>
 <body>
     <div class="stars"></div>
     
-    <!-- Floating Animations -->
     <div class="floating-animations">
         <div class="floating-emoji cake">🎂</div>
         <div class="floating-emoji cake">🎂</div>
@@ -27,22 +73,24 @@
         <div class="floating-emoji gift">🎁</div>
     </div>
     
-    <!-- Locked Overlay -->
-    <div class="locked-overlay" id="lockedOverlay">
-        <div class="locked-content">
-            <div class="lock-icon">🔒</div>
-            <h1 class="locked-title">Content Locked</h1>
-            <p class="locked-message">This special birthday surprise will unlock at:</p>
-            <div class="unlock-time">12:00 AM, November 16, 2025</div>
-            <div class="locked-countdown" id="lockedCountdown"></div>
-            <p class="patience-message">Just a little more patience, Sakshi! 💖</p>
+    <div class="locked-overlay" id="lockedOverlay" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <div class="locked-content" style="text-align: center;">
+            <div class="lock-icon" style="font-size: 4rem; margin-bottom: 10px;">🔒</div>
+            <h1 class="locked-title" style="color: #ff1493;">Content Locked</h1>
+            <p class="locked-message">Please enter the secret password to view this surprise!</p>
+            
+            <div>
+                <input type="password" id="passwordInput" class="password-input" placeholder="Enter Password">
+            </div>
+            <div>
+                <button onclick="checkPassword()" class="unlock-btn">Unlock</button>
+            </div>
+            <p id="errorMsg" class="error-text">Incorrect Password!</p>
         </div>
     </div>
     
-    <!-- Main Content Wrapper -->
     <div class="main-content" id="mainContent">
     
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <h1 class="fade-in">Happy Birthday Sakshi! 🎂</h1>
@@ -51,7 +99,6 @@
         </div>
     </section>
 
-    <!-- Our Journey Section -->
     <section class="journey">
         <div class="container">
             <h2>Our Journey Together</h2>
@@ -84,7 +131,6 @@
         </div>
     </section>
 
-    <!-- What Makes You Special Section -->
     <section class="special">
         <div class="container">
             <h2>What Makes You Special</h2>
@@ -153,7 +199,6 @@
         </div>
     </section>
 
-    <!-- Messages Section -->
     <section class="messages">
         <div class="container">
             <h2>Birthday Wishes</h2>
@@ -171,7 +216,7 @@ I'm wishing you everything wonderful today, and especially for the year ahead. I
                     My biggest wish for you is that you achieve that dream and get to dive deep into the subject you love.
                     May this new year bring you one step closer to all your adventures, from the halls of JNU to all the foreign 
                     countries you've always wanted to explore. Never change that amazing, one-of-a-kind heart. Have the most wonderful day!
-                
+                 
                     <br><br>
                     You're not just a friend - you're a blessing. Thank you for being you. ✨
                 </p>
@@ -180,7 +225,6 @@ I'm wishing you everything wonderful today, and especially for the year ahead. I
         </div>
     </section>
 
-    <!-- Interactive Section -->
     <section class="interactive">
         <div class="container">
             <h2>Make a Wish! ✨</h2>
@@ -196,7 +240,6 @@ I'm wishing you everything wonderful today, and especially for the year ahead. I
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <p>Made with ❤️ for Sakshi</p>
@@ -205,8 +248,195 @@ I'm wishing you everything wonderful today, and especially for the year ahead. I
     </footer>
     
     </div>
-    <!-- End Main Content Wrapper -->
+    <script>
+    // PASSWORD CHECKER FUNCTION
+    function checkPassword() {
+        const input = document.getElementById('passwordInput').value;
+        const correctPass = "Kitchi@321";
+        const errorMsg = document.getElementById('errorMsg');
 
-    <script src="script.js"></script>
+        if (input === correctPass) {
+            // Unlock the content
+            document.getElementById('lockedOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            // Optional: Save to session so it stays unlocked on refresh
+            sessionStorage.setItem('isUnlocked', 'true');
+        } else {
+            // Show error
+            errorMsg.style.display = 'block';
+            // Hide error after 2 seconds
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 2000);
+        }
+    }
+
+    // Check on load if already unlocked
+    window.onload = function() {
+        if (sessionStorage.getItem('isUnlocked') === 'true') {
+            document.getElementById('lockedOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+        // Initialize other functions
+        updateCountdown();
+        calculateFriendshipDays();
+        setInterval(updateCountdown, 1000);
+    };
+
+    // Countdown to Birthday (Visual only now, does not lock content)
+    function updateCountdown() {
+        const birthday = new Date('November 16, 2025 00:00:00').getTime();
+        const now = new Date().getTime();
+        const distance = birthday - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        const countdownElement = document.getElementById('countdown');
+        
+        if (distance < 0) {
+            countdownElement.innerHTML = `
+                <div style="font-size: 2rem; color: white; font-weight: bold;">
+                    🎉 It's Your Birthday! 🎉
+                </div>
+            `;
+        } else {
+            countdownElement.innerHTML = `
+                <div class="countdown-item">
+                    <span class="countdown-number">${days}</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number">${hours}</span>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number">${minutes}</span>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number">${seconds}</span>
+                    <span class="countdown-label">Seconds</span>
+                </div>
+            `;
+        }
+    }
+
+    // Calculate friendship days
+    function calculateFriendshipDays() {
+        const startDate = new Date('May 22, 2025');
+        const today = new Date();
+        const diffTime = Math.abs(today - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        document.getElementById('friendshipDays').textContent = diffDays;
+    }
+
+    // Candle blow effect
+    const cake = document.getElementById('cake');
+    const flame = document.getElementById('flame');
+    const instruction = document.getElementById('instruction');
+
+    if(cake) {
+        cake.addEventListener('click', () => {
+            flame.classList.add('blown');
+            instruction.textContent = '🎉 Happy Birthday Sakshi! May all your wishes come true! 🎉';
+            instruction.style.color = '#ff1493';
+            instruction.style.fontSize = '1.5rem';
+            
+            // Create confetti effect
+            createConfetti();
+            
+            setTimeout(() => {
+                flame.classList.remove('blown');
+                instruction.textContent = 'Click the candle to blow it out!';
+                instruction.style.color = '#ff69b4';
+                instruction.style.fontSize = '1.3rem';
+            }, 5000);
+        });
+    }
+
+    // Confetti effect
+    function createConfetti() {
+        const colors = ['#ff1493', '#ff69b4', '#ffc0cb', '#ffb6c1', '#ff91c7', '#ffd700'];
+        const confettiCount = 150;
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '-10px';
+            confetti.style.opacity = '1';
+            confetti.style.zIndex = '9999';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            confetti.style.pointerEvents = 'none';
+            
+            document.body.appendChild(confetti);
+            
+            const duration = Math.random() * 3 + 2;
+            const rotation = Math.random() * 360;
+            const xMovement = (Math.random() - 0.5) * 100;
+            
+            confetti.animate([
+                { 
+                    transform: `translateY(0) translateX(0) rotate(0deg)`,
+                    opacity: 1
+                },
+                { 
+                    transform: `translateY(${window.innerHeight}px) translateX(${xMovement}px) rotate(${rotation}deg)`,
+                    opacity: 0
+                }
+            ], {
+                duration: duration * 1000,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+            
+            setTimeout(() => {
+                confetti.remove();
+            }, duration * 1000);
+        }
+    }
+
+    // Smooth scroll for any future navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.card, .timeline-item, .wish-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    </script>
 </body>
 </html>
